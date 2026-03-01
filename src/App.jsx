@@ -1,10 +1,12 @@
+import { useState } from "react";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "./firebase";
+import SignupForm from "./components/SignupForm";
+
 function App() {
   return (
-    <section>
-      
-    </section>  
-  );
+    <SignupForm />
+  )
 }
-
 
 export default App;
