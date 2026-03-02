@@ -1,1 +1,1 @@
-https://paul-saac.github.io/React-LiveChat/#/
+https://paul-saac.github.io/React-LiveChat/#/login
