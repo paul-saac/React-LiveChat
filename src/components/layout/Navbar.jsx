@@ -11,7 +11,7 @@ export default function Navbar({ user }) {
 
   return (
     <nav className="navbar">
-      <h1 className="navbar-brand">LiveChat</h1>
+      <h1 className="navbar-brand">React Live-Chat</h1>
       <div className="navbar-right">
         <span className="navbar-email">{user.email}</span>
         <button className="btn-signout" onClick={handleSignOut}>

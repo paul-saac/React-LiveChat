@@ -56,27 +56,19 @@ function App() {
     <BrowserRouter>
       <div className="app">
         <Routes>
-          <Route
-            path="/login"
-            element={
-              !user ? (
-                authMode === "login" ? (
-                  <SigninForm onToggle={toggleAuthMode} />
-                ) : (
-                  <SignupForm onToggle={toggleAuthMode} />
-                )
+          <Route path="/login" element={
+            !user ? (
+              authMode === "login" ? (
+                <SigninForm onToggle={toggleAuthMode} />
               ) : (
-                <Navigate to="/" />
+                <SignupForm onToggle={toggleAuthMode} />
               )
-            }
-          />
+            ) : (
+              <Navigate to="/" />
+            )
+          } />
 
-          <Route
-            path="/"
-            element={
-              user ? <Home user={user} /> : <Navigate to="/login" />
-            }
-          />
+          <Route path="/" element={user ? <Home user={user} /> : <Navigate to="/login" />} />
 
           <Route path="/404" element={<NotFound />} />
           <Route path="*" element={<Navigate to={user ? "/" : "/login"} />} />
