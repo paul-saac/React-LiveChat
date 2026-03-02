@@ -1,8 +1,8 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../firebase";
 import { useState } from "react";
 
-export default function SignupForm({ onToggle }) {
+export default function SigninForm({ onToggle }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -13,7 +13,7 @@ export default function SignupForm({ onToggle }) {
         setError('');
         setLoading(true);
         try {
-            await createUserWithEmailAndPassword(auth, email, password);
+            await signInWithEmailAndPassword(auth, email, password);
             setEmail('');
             setPassword('');
         } catch (err) {
@@ -25,7 +25,7 @@ export default function SignupForm({ onToggle }) {
 
     return (
         <div className="auth-container">
-            <h2>Sign Up</h2>
+            <h2>Sign In</h2>
             {error && <p className="auth-error">{error}</p>}
             <form className="auth-form" onSubmit={handleSubmit}>
                 <label>Email</label>
@@ -42,18 +42,17 @@ export default function SignupForm({ onToggle }) {
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="At least 6 characters"
+                    placeholder="Your password"
                     required
-                    minLength={6}
                 />
 
                 <button type="submit" disabled={loading}>
-                    {loading ? 'Creating account...' : 'Sign Up'}
+                    {loading ? 'Signing in...' : 'Sign In'}
                 </button>
             </form>
             <p className="auth-toggle">
-                Already have an account?{' '}
-                <span onClick={onToggle}>Sign In</span>
+                Don't have an account?{' '}
+                <span onClick={onToggle}>Sign Up</span>
             </p>
         </div>
     );

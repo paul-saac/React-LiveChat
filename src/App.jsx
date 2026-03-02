@@ -1,38 +1,88 @@
-import { useState } from "react";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import { auth } from "./firebase";
-import SignupForm from "./components/SignupForm.jsx";
-import SigninForm from "./components/SigninForm.jsx";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, setDoc, getDoc } from "firebase/firestore";
+import { auth, db } from "./firebase";
+import SigninForm from "./components/auth/SigninForm";
+import SignupForm from "./components/auth/SignupForm";
+import Home from "./pages/Home";
+import NotFound from "./pages/NotFound";
 import "./App.css";
 
 function App() {
-  const [isSignUp, setIsSignUp] = useState(false);
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [authMode, setAuthMode] = useState("login");
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        const userRef = doc(db, "users", currentUser.uid);
+        const userSnap = await getDoc(userRef);
+
+        if (!userSnap.exists()) {
+          await setDoc(userRef, {
+            uid: currentUser.uid,
+            email: currentUser.email,
+            displayName:
+              currentUser.displayName || currentUser.email.split("@")[0],
+            createdAt: new Date().toISOString(),
+          });
+        }
+
+        setUser(currentUser);
+      } else {
+        setUser(null);
+      }
+      setLoading(false);
     });
+
     return () => unsubscribe();
   }, []);
 
-  const toggleForm = () => setIsSignUp((prev) => !prev);
+  const toggleAuthMode = () => {
+    setAuthMode((prev) => (prev === "login" ? "signup" : "login"));
+  };
 
-  if (user) {
+  if (loading) {
     return (
-      <div className="auth-container">
-        <h2>Welcome!</h2>
-        <p>Signed in as <strong>{user.email}</strong></p>
-        <button onClick={() => signOut(auth)}>Sign Out</button> 
+      <div className="loading-screen">
+        <p>Loading...</p>
       </div>
     );
   }
 
   return (
-    <>
-      {isSignUp ? <SignupForm onToggle={toggleForm} /> : <SigninForm onToggle={toggleForm} />}
-    </>
+    <BrowserRouter>
+      <div className="app">
+        <Routes>
+          <Route
+            path="/login"
+            element={
+              !user ? (
+                authMode === "login" ? (
+                  <SigninForm onToggle={toggleAuthMode} />
+                ) : (
+                  <SignupForm onToggle={toggleAuthMode} />
+                )
+              ) : (
+                <Navigate to="/" />
+              )
+            }
+          />
+
+          <Route
+            path="/"
+            element={
+              user ? <Home user={user} /> : <Navigate to="/login" />
+            }
+          />
+
+          <Route path="/404" element={<NotFound />} />
+          <Route path="*" element={<Navigate to={user ? "/" : "/login"} />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }
 
