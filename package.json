@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://YOUR_GITHUB_USERNAME.github.io/React-LiveChat/",
+  "homepage": "https://paul-saac.github.io/React-LiveChat/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
