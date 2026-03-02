@@ -37,6 +37,3 @@ function App() {
 }
 
 export default App;
-
-
-  useEffect(() => onAuthStateChanged(auth, setUser), []);
