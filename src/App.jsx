@@ -56,17 +56,12 @@ function App() {
     <HashRouter>
       <div className="app">
         <Routes>
-          <Route path="/login" element={
-            !user ? (
-              authMode === "login" ? (
-                <SigninForm onToggle={toggleAuthMode} />
-              ) : (
-                <SignupForm onToggle={toggleAuthMode} />
-              )
-            ) : (
-              <Navigate to="/" />
-            )
-          } />
+          <Route
+            path="/login"
+            element={
+              !user ? ( authMode === "login" ? <SigninForm onToggle={toggleAuthMode} /> : <SignupForm onToggle={toggleAuthMode} />
+              ) : ( <Navigate to="/" /> )
+            }/>
 
           <Route path="/" element={user ? <Home user={user} /> : <Navigate to="/login" />} />
 
